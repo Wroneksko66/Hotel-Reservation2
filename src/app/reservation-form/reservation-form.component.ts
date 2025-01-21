@@ -35,10 +35,8 @@ export class ReservationFormComponent implements OnInit {
 
     if(id){
       let reservation = this.reservationService.getReservation(id);
-      console.log(reservation)
       if(reservation){
         this.reservationForm.patchValue(reservation)
-        console.log('xd');
       }
 
     }
@@ -46,7 +44,18 @@ export class ReservationFormComponent implements OnInit {
 
   onSubmit() {
     if (this.reservationForm.valid) {
-      this.reservationService.addReservation(this.reservationForm.value)
+    let reservation = this.reservationForm.value;
+
+      let id = this.activeRoute.snapshot.params['id'];
+
+      if(id){
+        reservation.id = id;
+        this.reservationService.updateReservation(reservation)
+      }
+      else {
+        this.reservationService.addReservation(reservation)
+      }
+
     }
     this.router.navigate(['/list'])
   }

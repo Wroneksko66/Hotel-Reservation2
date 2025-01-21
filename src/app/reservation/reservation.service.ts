@@ -35,6 +35,7 @@ export class ReservationService {
   updateReservation(updateReservation: Reservation) {
     let index = this.reservations.findIndex(res => res.id === updateReservation.id)
     this.reservations[index] = updateReservation
+
   }
 
 

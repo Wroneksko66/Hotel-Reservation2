@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 
 import {HomeModule} from "./home/home.module";
 import {ReservationModule} from "./reservation/reservation.module";
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 @NgModule({
   declarations: [
     AppComponent
@@ -15,6 +16,7 @@ import {ReservationModule} from "./reservation/reservation.module";
     AppRoutingModule,
     HomeModule,
     ReservationModule,
+    NgbModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
