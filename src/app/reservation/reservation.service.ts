@@ -1,41 +1,36 @@
 import {Injectable} from '@angular/core';
 import {Reservation} from "../models/reservation";
+import {Observable} from "rxjs";
+import {HttpClient} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservationService {
   private reservations: Reservation[] = [];
+  private apiUrl = "http://localhost:3001"
 
-  constructor() {
-    let saveReservation = localStorage.getItem('reservations');
-    this.reservations = saveReservation? JSON.parse(saveReservation) : [];
+  constructor(private http: HttpClient) {
   }
 
-  getReservations(): Reservation[] {
-    return this.reservations
+  getReservations(): Observable<Reservation[]> {
+    return this.http.get<Reservation[]>(this.apiUrl + "/reservations")
   }
 
-  getReservation(id: string): Reservation | undefined {
-    return this.reservations.find(res => res.id === id)
+  getReservation(id: number): Observable<Reservation> {
+    return this.http.get<Reservation>(this.apiUrl + "/reservation/" + id)
   }
 
-  addReservation(reservation: Reservation) {
-    reservation.id = Date.now().toString();
-    this.reservations.push(reservation)
-    localStorage.setItem('reservations', JSON.stringify(this.reservations))
-
+  addReservation(reservation: Reservation):Observable<void> {
+    return this.http.post<void>(this.apiUrl + "/reservation", reservation)
   }
 
   deleteReservation(id: string) {
-    let index = this.reservations.findIndex(res => res.id === id)
-    this.reservations.splice(index, 1)
+    return this.http.delete<void>(this.apiUrl + "/reservation/" + id)
   }
 
-  updateReservation(updateReservation: Reservation) {
-    let index = this.reservations.findIndex(res => res.id === updateReservation.id)
-    this.reservations[index] = updateReservation
-
+  updateReservation(id:string,update:Reservation):Observable<void> {
+    return this.http.put<void>(this.apiUrl + "/reservation/" + id, update)
   }
 
 

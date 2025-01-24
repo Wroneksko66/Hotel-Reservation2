@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators,} from '@angular/forms';
+import {EmailValidator, FormBuilder, FormGroup, Validators,} from '@angular/forms';
 import {ReservationService} from "../reservation/reservation.service";
 import {ActivatedRoute, Router} from "@angular/router";
+
 @Component({
   selector: 'app-reservation-form',
   templateUrl: './reservation-form.component.html',
@@ -15,7 +16,7 @@ export class ReservationFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private reservationService: ReservationService,
     private router: Router,
-    private  activeRoute: ActivatedRoute){
+    private activeRoute: ActivatedRoute) {
 
   }
 
@@ -29,34 +30,32 @@ export class ReservationFormComponent implements OnInit {
       roomNumber: ['', Validators.required],
 
 
-
     })
-    let id =  this.activeRoute.snapshot.params['id'];
+    let id = this.activeRoute.snapshot.params['id'];
 
-    if(id){
-      let reservation = this.reservationService.getReservation(id);
-      if(reservation){
-        this.reservationForm.patchValue(reservation)
-      }
-
+    if (id) {
+      this.reservationService.getReservation(id).subscribe(reservation => {
+        if (reservation) {
+          this.reservationForm.patchValue(reservation)
+        }
+      })
     }
+
   }
 
   onSubmit() {
-    if (this.reservationForm.valid) {
-    let reservation = this.reservationForm.value;
-
-      let id = this.activeRoute.snapshot.params['id'];
-
-      if(id){
-        reservation.id = id;
-        this.reservationService.updateReservation(reservation)
+    let id = this.activeRoute.snapshot.params['id'];
+    if (id) {
+      this.reservationService.updateReservation(id, this.reservationForm.value).subscribe
+      (reservation => {
+        console.log("Reservation updated successfully")
+      })
+      this.router.navigate(['list'])
+    } else this.reservationService.addReservation(this.reservationForm.value).subscribe(
+      reservation => {
+        console.log("Reservation added successfully")
       }
-      else {
-        this.reservationService.addReservation(reservation)
-      }
-
-    }
-    this.router.navigate(['/list'])
+    )
+    this.router.navigate(['list'])
   }
 }

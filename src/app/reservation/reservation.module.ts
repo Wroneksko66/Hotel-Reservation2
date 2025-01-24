@@ -16,7 +16,7 @@ import {HomeModule} from "../home/home.module";
     CommonModule,
     ReactiveFormsModule,
     RouterLink,
-    HomeModule
+    HomeModule,
   ]
 })
 export class ReservationModule {

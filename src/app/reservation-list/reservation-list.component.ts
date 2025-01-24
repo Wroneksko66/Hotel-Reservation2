@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ReservationService} from "../reservation/reservation.service";
 import {Reservation} from "../models/reservation";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-reservation-list',
@@ -11,8 +12,9 @@ export class ReservationListComponent implements OnInit {
   reservationList: Reservation[] = []
 
   ngOnInit() {
-    this.reservationList = this.reservationService.getReservations();
-    console.log(this.reservationList);
+    this.reservationService.getReservations().subscribe(reservations => {
+      this.reservationList = reservations;
+    })
 
   }
 
@@ -20,8 +22,10 @@ export class ReservationListComponent implements OnInit {
     private reservationService: ReservationService) {
   }
 
-  deleteReservation(id: string) {
-    this.reservationService.deleteReservation(id)
-  }
 
+  deleteReservation(id: string) {
+    this.reservationService.deleteReservation(id).subscribe(() => {
+      console.log("Reservation deleted successfully");
+    })
+  }
 }
